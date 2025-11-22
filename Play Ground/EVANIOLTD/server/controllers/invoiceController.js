@@ -80,7 +80,16 @@ export const generateInvoice = async (req, res) => {
     // Generate PDF
     try {
       const pdfResult = await generateInvoicePDF(invoice, order, user);
-      invoice.pdfUrl = pdfResult.url;
+      // On Vercel, pdfResult.url will be null, but buffer is available for external upload
+      if (pdfResult.url) {
+        invoice.pdfUrl = pdfResult.url;
+      } else if (pdfResult.buffer) {
+        // On Vercel: PDF is generated but needs to be uploaded to external storage
+        // For now, store a note that PDF was generated
+        invoice.pdfUrl = null;
+        invoice.pdfGenerated = true;
+        // TODO: Upload pdfResult.buffer to UploadThing/S3 and store the URL
+      }
       await invoice.save();
     } catch (error) {
       console.error('Error generating PDF:', error);

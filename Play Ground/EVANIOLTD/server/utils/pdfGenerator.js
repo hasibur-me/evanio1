@@ -3,9 +3,13 @@ import PDFDocument from 'pdfkit';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { Readable } from 'stream';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Check if running on Vercel (serverless)
+const isVercel = process.env.VERCEL || process.env.VERCEL_URL;
 
 export const generateInvoicePDF = async (invoice, order, user) => {
   return new Promise((resolve, reject) => {
@@ -13,15 +17,24 @@ export const generateInvoicePDF = async (invoice, order, user) => {
       // Create PDF document
       const doc = new PDFDocument({ margin: 50, size: 'A4' });
       
-      // Create uploads directory if it doesn't exist
-      const uploadsDir = path.join(__dirname, '../uploads/invoices');
-      if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir, { recursive: true });
-      }
-
       const filename = `invoice-${invoice.invoiceNumber}.pdf`;
-      const filepath = path.join(uploadsDir, filename);
-      const stream = fs.createWriteStream(filepath);
+      let stream;
+      let filepath;
+      
+      if (isVercel) {
+        // On Vercel: Use /tmp directory (only writable location) or return buffer
+        const tmpDir = '/tmp';
+        filepath = path.join(tmpDir, filename);
+        stream = fs.createWriteStream(filepath);
+      } else {
+        // Local development: Use uploads directory
+        const uploadsDir = path.join(__dirname, '../uploads/invoices');
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+        filepath = path.join(uploadsDir, filename);
+        stream = fs.createWriteStream(filepath);
+      }
       
       doc.pipe(stream);
 
@@ -130,12 +143,31 @@ export const generateInvoicePDF = async (invoice, order, user) => {
       doc.end();
 
       stream.on('finish', () => {
-        const publicUrl = `/uploads/invoices/${filename}`;
-        resolve({
-          filepath,
-          filename,
-          url: publicUrl
-        });
+        // On Vercel, files in /tmp are temporary and not publicly accessible
+        // Return buffer or upload to external storage instead
+        if (isVercel) {
+          // Read the file as buffer for upload to external storage
+          fs.readFile(filepath, (err, buffer) => {
+            if (err) {
+              reject(err);
+              return;
+            }
+            resolve({
+              filepath,
+              filename,
+              buffer, // Include buffer for external upload
+              url: null, // Not publicly accessible on Vercel
+              note: 'File saved to /tmp. Upload to external storage (S3, UploadThing, etc.) for public access.'
+            });
+          });
+        } else {
+          const publicUrl = `/uploads/invoices/${filename}`;
+          resolve({
+            filepath,
+            filename,
+            url: publicUrl
+          });
+        }
       });
 
       stream.on('error', (error) => {

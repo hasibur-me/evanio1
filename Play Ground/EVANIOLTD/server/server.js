@@ -39,6 +39,7 @@ dotenv.config();
 const app = express();
 
 // Middleware
+const isVercel = process.env.VERCEL || process.env.VERCEL_URL;
 const allowedOrigins = [
   process.env.FRONTEND_URL || 'http://localhost:5173',
   'http://localhost:5173',
@@ -47,6 +48,8 @@ const allowedOrigins = [
   // Add Vercel deployment URLs
   ...(process.env.VERCEL_URL ? [`https://${process.env.VERCEL_URL}`] : []),
   ...(process.env.VERCEL ? [process.env.VERCEL] : []),
+  // Allow all Vercel preview deployments
+  ...(isVercel ? [/^https:\/\/.*\.vercel\.app$/] : []),
 ];
 
 app.use(cors({
@@ -83,8 +86,19 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Serve static files (invoices, etc.)
-app.use('/uploads', express.static(join(__dirname, 'uploads')));
+// Serve static files (invoices, etc.) - Only in non-serverless environments
+// On Vercel, use external storage (UploadThing, S3, etc.) instead
+if (!process.env.VERCEL && !process.env.VERCEL_URL) {
+  app.use('/uploads', express.static(join(__dirname, 'uploads')));
+} else {
+  // On Vercel, provide a message for uploads endpoint
+  app.use('/uploads', (req, res) => {
+    res.status(404).json({ 
+      message: 'File uploads are handled via UploadThing. Use the upload API endpoints instead.',
+      uploadEndpoint: '/api/documents/upload'
+    });
+  });
+}
 
 // Routes
 app.use('/api/auth', authRoutes);
@@ -152,8 +166,11 @@ app.use(notFound);
 app.use(errorHandler);
 
 // Database connection - only connect if not running on Vercel (serverless)
-// On Vercel, connection will be established per request
-if (!process.env.VERCEL) {
+// On Vercel, connection is handled in api/index.js per request
+const isVercel = process.env.VERCEL || process.env.VERCEL_URL;
+
+if (!isVercel) {
+  // Local/development server - start listening
   mongoose
     .connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/evanio-ltd')
     .then(() => {
@@ -179,15 +196,8 @@ if (!process.env.VERCEL) {
       process.exit(1);
     });
 } else {
-  // On Vercel, connect to MongoDB (connection will be reused across invocations)
-  mongoose
-    .connect(process.env.MONGODB_URI)
-    .then(() => {
-      console.log('MongoDB connected (Vercel serverless)');
-    })
-    .catch((error) => {
-      console.error('MongoDB connection error:', error);
-    });
+  // On Vercel - don't connect here, connection handled in api/index.js
+  console.log('Running on Vercel - MongoDB connection handled per request');
 }
 
 export default app;
