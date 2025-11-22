@@ -67,6 +67,7 @@ server/temp/
 # Sensitive files
 ADMIN_CREDENTIALS.txt
 ADMIN_ACCESS.md
+vercel-env-template.txt
 
 
 

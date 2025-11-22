@@ -7,8 +7,17 @@ import app from '../server/server.js';
 export default async (req, res) => {
   // Ensure MongoDB is connected (connection is reused across invocations)
   const mongoose = (await import('mongoose')).default;
+  
   if (mongoose.connection.readyState === 0) {
-    await mongoose.connect(process.env.MONGODB_URI);
+    try {
+      await mongoose.connect(process.env.MONGODB_URI, {
+        serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+      });
+      console.log('MongoDB connected (serverless function)');
+    } catch (error) {
+      console.error('MongoDB connection error:', error);
+      // Continue anyway - connection might be established on next invocation
+    }
   }
   
   // Handle the request with Express app
