@@ -74,7 +74,10 @@ export const AuthProvider = ({ children }) => {
       });
       
       if (error.code === 'ECONNREFUSED' || error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
-        throw new Error('Cannot connect to server. Please make sure the server is running on http://localhost:5000');
+        const errorMessage = import.meta.env.DEV 
+          ? 'Cannot connect to server. Please make sure the server is running.'
+          : 'Unable to connect to the server. Please try again later.';
+        throw new Error(errorMessage);
       }
       
       const errorMessage = error.response?.data?.message || error.message || 'Login failed. Please check your credentials and try again.';

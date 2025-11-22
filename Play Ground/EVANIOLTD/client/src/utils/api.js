@@ -55,7 +55,11 @@ api.interceptors.response.use(
     // Handle network errors specifically
     if (error.code === 'ERR_NETWORK' || error.code === 'ECONNREFUSED' || error.message === 'Network Error') {
       console.error('Network Error - Server may not be running or CORS issue');
-      return Promise.reject(new Error('Cannot connect to server. Please make sure the server is running on http://localhost:5000'));
+      const apiUrl = import.meta.env.VITE_API_URL || '/api';
+      const errorMessage = import.meta.env.DEV 
+        ? 'Cannot connect to server. Please make sure the server is running.'
+        : 'Unable to connect to the server. Please try again later.';
+      return Promise.reject(new Error(errorMessage));
     }
 
     // Only redirect to login if we're not already on the login/register page

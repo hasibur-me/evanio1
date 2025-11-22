@@ -48,7 +48,11 @@ export default function Invoices() {
 
   const handleDownloadInvoice = (invoice) => {
     if (invoice.pdfUrl) {
-      window.open(`${process.env.VITE_API_URL || 'http://localhost:5000'}${invoice.pdfUrl}`, '_blank');
+      // Use relative URL for same-origin requests, or full URL if provided
+      const pdfUrl = invoice.pdfUrl?.startsWith('http') 
+        ? invoice.pdfUrl 
+        : `${import.meta.env.VITE_API_URL || '/api'}${invoice.pdfUrl}`;
+      window.open(pdfUrl, '_blank');
     } else {
       alert('PDF not available. Please contact support.');
     }
