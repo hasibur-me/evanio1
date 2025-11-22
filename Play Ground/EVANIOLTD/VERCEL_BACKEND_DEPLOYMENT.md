@@ -23,10 +23,13 @@ This guide will help you deploy your Express.js backend to Vercel as serverless 
 **Important**: Configure these settings:
 
 - **Framework Preset**: Other (or leave blank)
-- **Root Directory**: Leave as `.` (root)
+- **Root Directory**: `.` (project root - **THIS IS CRITICAL**)
+  - ✅ Correct: `.` (root directory)
+  - ❌ Wrong: `server` or `api` or any subdirectory
+  - The `api/index.js` file must be at the root level for Vercel to detect it
 - **Build Command**: Leave empty (or `echo "No build needed"`)
 - **Output Directory**: Leave empty
-- **Install Command**: `npm install` (or leave default)
+- **Install Command**: `cd server && npm install` (installs server dependencies)
 
 **OR** use the Vercel CLI:
 
@@ -122,18 +125,24 @@ Expected response:
 ### File Structure
 
 ```
-/
+/ (Root Directory = ".")
 ├── api/
-│   └── index.js          # Vercel serverless function entry point
+│   └── index.js          # Vercel serverless function entry point (MUST be at root/api/)
 ├── server/
 │   ├── server.js         # Express app (modified for serverless)
 │   ├── routes/           # All API routes
 │   ├── controllers/      # Controllers
 │   ├── models/          # MongoDB models
 │   └── ...
-├── vercel.json           # Vercel configuration
+├── vercel.json           # Vercel configuration (at root)
 └── package.json          # Root package.json
 ```
+
+**Why Root Directory = "."?**
+- Vercel looks for `api/` folder at the root level
+- The `api/index.js` file is the serverless function entry point
+- `vercel.json` must be at the root to configure routes
+- Server code in `server/` is imported by `api/index.js`
 
 ### Vercel Configuration (`vercel.json`)
 
