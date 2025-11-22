@@ -1,0 +1,42 @@
+{
+  "common": {
+    "welcome": "Willkommen",
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "logout": "Abmelden",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "view": "Ansehen",
+    "search": "Suchen",
+    "loading": "Lädt...",
+    "error": "Fehler",
+    "success": "Erfolg"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "orders": "Bestellungen",
+    "services": "Dienstleistungen",
+    "documents": "Dokumente",
+    "tickets": "Tickets",
+    "payments": "Zahlungen",
+    "profile": "Profil"
+  },
+  "orders": {
+    "title": "Meine Bestellungen",
+    "orderNumber": "Bestellnummer",
+    "status": "Status",
+    "amount": "Betrag",
+    "date": "Datum"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "register": "Registrieren",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "forgotPassword": "Passwort vergessen?",
+    "rememberMe": "Angemeldet bleiben"
+  }
+}
+
