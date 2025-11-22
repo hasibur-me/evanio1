@@ -257,3 +257,4 @@ const getEmailTemplate = (templateName, variables = {}) => {
 
 export default getEmailTemplate;
 
+

@@ -67,3 +67,4 @@ If manual configuration doesn't work, Vercel will automatically use the `client/
 - Vercel will use the build command from `package.json`
 - The `client/vercel.json` will provide additional configuration
 
+

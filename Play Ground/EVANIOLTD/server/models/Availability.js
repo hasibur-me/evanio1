@@ -43,3 +43,4 @@ availabilitySchema.index({ userId: 1, dayOfWeek: 1, startTime: 1, endTime: 1 }, 
 
 export default mongoose.model('Availability', availabilitySchema);
 
+

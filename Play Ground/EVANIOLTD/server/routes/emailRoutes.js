@@ -21,3 +21,4 @@ router.get('/templates', protect, admin, getEmailTemplates);
 
 export default router;
 
+

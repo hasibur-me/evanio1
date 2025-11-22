@@ -296,3 +296,4 @@ If you encounter issues:
 
 **Ready to deploy?** Start with deploying your backend, then deploy the frontend to Vercel!
 
+

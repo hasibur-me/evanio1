@@ -29,3 +29,4 @@ router.delete('/admin/:id', protect, admin, deleteBlogPost);
 
 export default router;
 
+

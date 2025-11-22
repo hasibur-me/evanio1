@@ -247,3 +247,4 @@ export const getEmailTemplates = async (req, res) => {
   }
 };
 
+

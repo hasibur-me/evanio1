@@ -119,3 +119,4 @@ export const scheduleReminderJob = () => {
 
 export default { sendAppointmentReminders, scheduleReminderJob };
 
+

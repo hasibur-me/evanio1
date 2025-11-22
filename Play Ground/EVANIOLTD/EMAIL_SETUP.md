@@ -95,3 +95,4 @@ If you want to test without setting up Resend, the system will:
 
 However, for production, you **must** configure Resend or another email service.
 
+

@@ -64,6 +64,10 @@ server/temp/
 *.key
 .cache
 
+# Sensitive files
+ADMIN_CREDENTIALS.txt
+ADMIN_ACCESS.md
+
 
 
 

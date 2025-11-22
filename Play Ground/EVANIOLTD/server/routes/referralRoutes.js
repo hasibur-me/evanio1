@@ -23,3 +23,4 @@ router.get('/admin/all', protect, admin, getAllReferrals);
 
 export default router;
 
+

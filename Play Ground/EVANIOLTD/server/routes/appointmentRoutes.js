@@ -37,3 +37,4 @@ router.post('/availability/weekly/:userId?', protect, setWeeklyAvailability);
 
 export default router;
 
+

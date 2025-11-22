@@ -300,3 +300,4 @@ export const trackFunnelStep = (funnelName, stepName, data) => {
 
 export default getAnalytics;
 
+

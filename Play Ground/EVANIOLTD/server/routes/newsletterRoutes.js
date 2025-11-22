@@ -19,3 +19,4 @@ router.post('/send', protect, admin, sendNewsletter);
 
 export default router;
 
+

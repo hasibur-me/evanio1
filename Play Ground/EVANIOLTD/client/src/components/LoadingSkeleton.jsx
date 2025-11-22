@@ -63,3 +63,4 @@ export const AvatarSkeleton = ({ size = 'md' }) => {
   return <Skeleton className={cn('rounded-full', sizes[size])} />;
 };
 
+

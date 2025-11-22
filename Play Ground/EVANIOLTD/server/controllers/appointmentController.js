@@ -420,3 +420,4 @@ export const addAppointmentNote = async (req, res) => {
   }
 };
 
+
