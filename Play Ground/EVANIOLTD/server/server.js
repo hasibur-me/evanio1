@@ -167,8 +167,6 @@ app.use(errorHandler);
 
 // Database connection - only connect if not running on Vercel (serverless)
 // On Vercel, connection is handled in api/index.js per request
-const isVercel = process.env.VERCEL || process.env.VERCEL_URL;
-
 if (!isVercel) {
   // Local/development server - start listening
   mongoose
